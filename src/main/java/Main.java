@@ -1,4 +1,6 @@
 import entity.Person;
+import org.hibernate.SQLQuery;
+import org.hibernate.transform.AliasToEntityMapResultTransformer;
 
 import javax.persistence.*;
 import java.util.List;
@@ -32,11 +34,16 @@ public class Main {
             System.out.println(p.getFirstName() + " " + p.getLastName());
 
         //Tercer Apartado
-        q = em.createNativeQuery("select p.first_name, p.last_name,h.name from person as p inner join house as h on p.house_id = h.id");
-        /** List<Person> pe=q.getResultList().;
-         for(int i=0; i<q.getResultList().size();i++){
-         System.out.println(pe.get(i).getFirstName());
-         System.out.println(pe.get(i).getLastName());
-         }**/
+        List f=em.createNativeQuery("select p.first_name, p.last_name,h.name from person as p inner join house as h on p.house_id = h.id")
+                .unwrap(SQLQuery.class)
+                .setResultTransformer(
+                        AliasToEntityMapResultTransformer.INSTANCE
+                )
+                .list();
+        for(int i=0; i<f.size();i++){
+         System.out.println(f.get(i).toString());
+         }
+
+
     }
 }
