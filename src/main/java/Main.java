@@ -1,9 +1,6 @@
 import entity.Person;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.Query;
+import javax.persistence.*;
 import java.util.List;
 
 public class Main {
@@ -12,7 +9,8 @@ public class Main {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("default");
         EntityManager em = emf.createEntityManager();
         Query q;
-//        q = em.createNamedQuery("Person.NombreConMaxPuntos",
+        List<Person> list;
+        q = em.createNamedQuery("Person.NombreConMaxPuntos");
 //                query="SELECT p.firstName, p.lastName\n" +
 //                        "FROM Person AS p\n" +
 //                        "WHERE p.id = (SELECT personByReceiver\n" +
@@ -24,13 +22,26 @@ public class Main {
 //                        "GROUP BY personByReceiver))");
 //        q.executeUpdate();
 
+
         String nombre = "Minerva";
         q = em.createQuery("select p from Person p join p.courses c where c.teacher.firstName = :name ");
-        List<Person> list = q.setParameter("name", nombre).getResultList();
+        list = q.setParameter("name", nombre).getResultList();
         for(Person z: list){
-            System.out.println("Zona:" + z.toString());
+            System.out.println( z.getFirstName() + " " + z.getLastName());
         }
 
+        TypedQuery<Person> query =
+                em.createNamedQuery("Person.NombreConMaxPuntos", Person.class);
+        List<Person> results = query.getResultList();
+        for(Person z: results){
+            System.out.println( z.getFirstName() + " " + z.getLastName());
+        }
+        query =
+                em.createNamedQuery("Person.ProfesorConMaxPuntos", Person.class);
+        results = query.getResultList();
+        for(Person z: results){
+            System.out.println( z.getFirstName() + " " + z.getLastName());
+        }
 
     }
 }

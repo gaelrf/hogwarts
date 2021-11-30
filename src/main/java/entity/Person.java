@@ -1,24 +1,34 @@
 package entity;
 
+import org.hibernate.annotations.Fetch;
+
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(name="person")
-//@NamedQueries({
-//        @NamedQuery(name="Person.NombreConMaxPuntos",
-//                query="SELECT p.firstName, p.lastName\n" +
-//                        "FROM Person AS p\n" +
-//                        "WHERE p.id = (SELECT personByReceiver\n" +
-//                        "FROM HousePoints\n" +
-//                        "GROUP BY personByReceiver\n" +
-//                        "HAVING SUM(points) >= ALL (SELECT \n" +
-//                        "SUM(points)\n" +
-//                        "FROM HousePoints\n" +
-//                        "GROUP BY personByReceiver))"),
-//        @NamedQuery(name="Country.findByName",
-//                query="SELECT c FROM Country c WHERE c.name = :name"),
-//})
+@NamedQueries({
+        @NamedQuery(name="Person.NombreConMaxPuntos",
+                query="SELECT p\n" +
+                        "FROM Person AS p\n" +
+                        "WHERE p.id = (SELECT personByReceiver\n" +
+                        "FROM HousePoints\n" +
+                        "GROUP BY personByReceiver\n" +
+                        "HAVING SUM(points) >= ALL (SELECT \n" +
+                        "SUM(points)\n" +
+                        "FROM HousePoints\n" +
+                        "GROUP BY personByReceiver))"),
+        @NamedQuery(name="Person.ProfesorConMaxPuntos",
+                query="SELECT p\n" +
+                        "FROM Person AS p\n" +
+                        "WHERE p.id = (SELECT personByGiver\n" +
+                        "FROM HousePoints\n" +
+                        "GROUP BY personByGiver\n" +
+                        "HAVING SUM(points) >= ALL (SELECT \n" +
+                        "SUM(points)\n" +
+                        "FROM HousePoints\n" +
+                        "GROUP BY personByGiver))"),
+})
 public class Person {
     private int id;
     private String firstName;
@@ -94,6 +104,5 @@ public class Person {
     public void setCourses(List<Course> courses) {
         this.courses = courses;
     }
-
 
 }
