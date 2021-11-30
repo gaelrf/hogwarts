@@ -5,20 +5,28 @@ import java.util.List;
 
 @Entity
 @Table(name="person")
-//@NamedQueries({
-//        @NamedQuery(name="Person.NombreConMaxPuntos",
-//                query="SELECT p.firstName, p.lastName\n" +
-//                        "FROM Person AS p\n" +
-//                        "WHERE p.id = (SELECT personByReceiver\n" +
-//                        "FROM HousePoints\n" +
-//                        "GROUP BY personByReceiver\n" +
-//                        "HAVING SUM(points) >= ALL (SELECT \n" +
-//                        "SUM(points)\n" +
-//                        "FROM HousePoints\n" +
-//                        "GROUP BY personByReceiver))"),
-//        @NamedQuery(name="Country.findByName",
-//                query="SELECT c FROM Country c WHERE c.name = :name"),
-//})
+@NamedQuery(name="Person.NombreConMaxPuntos",
+                query="SELECT p\n" +
+                        "FROM Person p\n" +
+                        "WHERE p.id = (SELECT hp.personByReceiver\n" +
+                        "FROM HousePoints hp\n" +
+                       "GROUP BY hp.personByReceiver\n" +
+                        "HAVING SUM(hp.points) >= ALL (SELECT \n" +
+                        "SUM(hp.points)\n" +
+                        "FROM HousePoints hp\n" +
+                        "GROUP BY hp.personByReceiver))")
+
+@NamedQuery(name="Person.NombreDaMasPuntos",
+        query="SELECT p\n" +
+                "FROM Person p\n" +
+                "WHERE p.id = (SELECT hp.personByGiver\n" +
+                "FROM HousePoints hp\n" +
+                "GROUP BY hp.personByGiver\n" +
+                "HAVING SUM(hp.points) >= ALL (SELECT \n" +
+                "SUM(hp.points)\n" +
+                "FROM HousePoints hp\n" +
+                "GROUP BY hp.personByGiver))")
+
 public class Person {
     private int id;
     private String firstName;
